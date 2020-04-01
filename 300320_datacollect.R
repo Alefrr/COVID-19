@@ -11,7 +11,7 @@ for (i in seq(2,length(dsets))) {
   
 }
 
-save(CovNaz, file = "data/300320_CovNaz.RData")
+save(CovNaz, file = paste0("data/",Sys.Date(),"_CovNaz.RData"))
 
 ##### Read dataset Provinciale
 dsets  <- list.files("dati-province")
@@ -24,7 +24,7 @@ for (i in seq(2,length(dsets))) {
                                              dsets[i])))
 }
 
-save(CovPrv, file = "data/300320_CovPrv.RData")
+save(CovPrv, file = paste0("data/",Sys.Date(),"_CovPrv.RData"))
 
 ##### Read dataset Regioni
 dsets  <- list.files("dati-regioni")
@@ -37,4 +37,16 @@ for (i in seq(2,length(dsets))) {
                                              dsets[i])))
 }
 
-save(CovReg, file = "data/300320_CovReg.RData")
+CovReg$denominazione_regione <- as.character(CovReg$denominazione_regione)
+CovReg$data                  <- as.Date(CovReg$data)
+
+save(CovReg, file = paste0("data/",Sys.Date(),"_CovReg.RData"))
+
+#### Regioni starting from 1 
+
+covreg1 <- CovReg[CovReg$totale_positivi>10,]
+covreg1_data <- covreg1 %>% 
+  group_by(denominazione_regione) %>%
+  mutate(data1 = seq(1:length(data)))
+
+save(covreg1_data, file = paste0("data/",Sys.Date(),"_CovReg1.RData"))

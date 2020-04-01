@@ -3,6 +3,7 @@ library(kableExtra)
 library(rgdal)
 library(ggplot2)
 library(broom)
+source("functions.R")
 
 italy <- readOGR( 
   dsn= paste0("aree/shp"),
@@ -10,7 +11,7 @@ italy <- readOGR(
 )
 
 Nord <- c("Lombardia","Piemonte","Veneto","P.A. Bolzano","P.A. Trento",
-          "Emilia Romagna","Liguria","Valle d'Aosta","Friuli Venezia Giulia")
+          "Emilia-Romagna","Liguria","Valle d'Aosta","Friuli Venezia Giulia")
 
 italytidy    <- tidy(italy)
 italytidy$id <- CovReg[match(italytidy$id, CovReg$codice_regione),
@@ -27,7 +28,7 @@ Tamponi <- zoo(CovReg$tamponi,
 nordgraph <- ggplot(data = CovReg[CovReg$denominazione_regione %in% Nord,], aes(x=data,
                           group = denominazione_regione)) +
   geom_line(aes(y=tamponi)) +
-  geom_line(aes(y=totale_attualmente_positivi,
+  geom_line(aes(y=nuovi_positivi,
                 colour = denominazione_regione )) +
   facet_wrap(.~ denominazione_regione, scales = "free") +
   scale_y_continuous(labels= function(x){FormatNumber(x)}) +
